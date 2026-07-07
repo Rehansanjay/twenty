@@ -1,1 +1,1 @@
-export type HostNativeEventType = 'focusin' | 'focusout';
+export type HostNativeEventType = 'beforeinput' | 'focusin' | 'focusout';

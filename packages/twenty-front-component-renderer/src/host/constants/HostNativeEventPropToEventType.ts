@@ -4,6 +4,7 @@ export const HOST_NATIVE_EVENT_PROP_TO_EVENT_TYPE: Record<
   string,
   HostNativeEventType
 > = {
+  onBeforeInput: 'beforeinput',
   onFocusIn: 'focusin',
   onFocusOut: 'focusout',
 };

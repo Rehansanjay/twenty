@@ -16,6 +16,9 @@ const generateComponentDefinition = (
     const eventProps = component.events
       .map((event) => {
         const propName = EVENT_TO_REACT[event];
+        if (propName === undefined) {
+          throw new Error(`Missing EVENT_TO_REACT mapping for '${event}'`);
+        }
         return `    ${propName}: { event: '${event}' },`;
       })
       .join('\n');

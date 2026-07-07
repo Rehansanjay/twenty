@@ -15,6 +15,16 @@ describe('extractHostNativeEventHandlers', () => {
     expect(remainingProps).toEqual({ id: 'x' });
   });
 
+  it('should extract a beforeinput handler from react props', () => {
+    const onBeforeInput = jest.fn();
+
+    const { nativeEventHandlers, remainingProps } =
+      extractHostNativeEventHandlers({ onBeforeInput, id: 'x' });
+
+    expect(nativeEventHandlers).toEqual({ beforeinput: onBeforeInput });
+    expect(remainingProps).toEqual({ id: 'x' });
+  });
+
   it('should drop a native-only handler whose value is not a function', () => {
     const { nativeEventHandlers, remainingProps } =
       extractHostNativeEventHandlers({ onFocusIn: 'alert(1)' });
