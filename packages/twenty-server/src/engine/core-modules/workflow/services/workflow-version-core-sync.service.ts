@@ -9,6 +9,7 @@ import {
   WorkflowVersionEntity,
   WorkflowVersionStatus,
 } from 'src/engine/core-modules/workflow/entities/workflow-version.entity';
+import { getWorkspaceCustomApplicationIdOrThrow } from 'src/engine/core-modules/workflow/utils/get-workspace-custom-application-id.util';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/inject-workspace-scoped-repository.decorator';
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
@@ -33,7 +34,10 @@ export class WorkflowVersionCoreSyncService {
       return;
     }
 
-    const applicationId = await this.getCustomApplicationIdOrThrow(workspaceId);
+    const applicationId = await getWorkspaceCustomApplicationIdOrThrow(
+      this.workspaceRepository,
+      workspaceId,
+    );
 
     await this.workflowVersionRepository.upsert(
       workspaceId,
@@ -52,23 +56,6 @@ export class WorkflowVersionCoreSyncService {
     );
 
     await this.invalidateAutomatedTriggerMaps(workspaceId);
-  }
-
-  private async getCustomApplicationIdOrThrow(
-    workspaceId: string,
-  ): Promise<string> {
-    const workspace = await this.workspaceRepository.findOne({
-      where: { id: workspaceId },
-      select: ['id', 'workspaceCustomApplicationId'],
-    });
-
-    if (!isDefined(workspace?.workspaceCustomApplicationId)) {
-      throw new Error(
-        `Workspace custom application not found for workspace ${workspaceId}`,
-      );
-    }
-
-    return workspace.workspaceCustomApplicationId;
   }
 
   async deleteFromCore(
